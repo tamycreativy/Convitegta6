@@ -78,7 +78,7 @@
   <button class="btn" id="bScan">📱 Escanear</button>
   <button class="skip" id="skip">Pular para as informações</button>
 
-  <audio id="music" src="musica.mp3" loop preload="auto"></audio>
+  <audio id="music" src="musica.mp3" loop preload="none"></audio>
   <div id="wait">Carregando…</div>
   <div id="modal"><div class="card">
     <h3>Confirmar presença</h3>
@@ -108,12 +108,12 @@ const $ = id => document.getElementById(id);
 const vids = [$("vA"), $("vB")];
 const cv = $("cv"), ctx = cv.getContext("2d");
 let scene = 0, unlocked = false, rafId = 0, scanning = false, ending = false, token = 0;
-const coverImgs = COVERS.map(s => { const i = new Image(); i.src = s; return i; });
+const coverImgs = [];   // (capas agora fixadas dentro do vídeo)
 
 /* ============ SOM (Web Audio: mistura com o áudio dos vídeos, inclusive no iPhone) ============ */
 let actx=null, musicGain=null, sfxGain=null, musicBuf=null, sfxBuf=null, embBuf=null, wantMusic=false, musicStarted=false, webAudioOK=false;
 const music = $("music");
-const sfxPool = Array.from({length:3}, ()=>{ const a=new Audio("clique.mp3"); a.preload="auto"; a.volume=SFX_VOL; return a; });
+const sfxPool = Array.from({length:3}, ()=>{ const a=new Audio("clique.mp3"); a.preload="none"; a.volume=SFX_VOL; return a; });
 let sfxIdx=0;
 function loadBuf(url){ return fetch(url).then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ab=>new Promise((res,rej)=>actx.decodeAudioData(ab,res,rej))); }
 let audioInited=false;
@@ -126,10 +126,18 @@ function initAudio(){
     musicGain = actx.createGain(); musicGain.gain.value = 0; musicGain.connect(actx.destination);
     sfxGain = actx.createGain(); sfxGain.gain.value = SFX_VOL; sfxGain.connect(actx.destination);
     webAudioOK = true;
-    loadBuf("musica.mp3").then(b=>{ musicBuf=b; if(wantMusic) playMusic(); }).catch(()=>{ webAudioOK=false; if(wantMusic) musicFallback(); });
-    loadBuf("clique.mp3").then(b=>{ sfxBuf=b; }).catch(()=>{});
-    loadBuf("emblema.mp3").then(b=>{ embBuf=b; }).catch(()=>{});
+    loadBuf("clique.mp3").then(b=>{ sfxBuf=b; }).catch(()=>{});      // pequeno: carrega já
   }catch(e){ webAudioOK=false; }
+}
+let heavyLoaded=false;
+function loadHeavy(){            // arquivos maiores: só depois que a tela de abertura sai (não disputam banda com o 1º vídeo)
+  if(heavyLoaded) return; heavyLoaded=true;
+  if(actx){
+    loadBuf("musica.mp3").then(b=>{ musicBuf=b; if(wantMusic) playMusic(); }).catch(()=>{ webAudioOK=false; if(wantMusic) musicFallback(); });
+    loadBuf("emblema.mp3").then(b=>{ embBuf=b; }).catch(()=>{});
+  }
+  fetch("emblema.webp").then(r=>r.blob()).then(b=>{ emBlob=b; }).catch(()=>{});
+  ["info.jpg","carregando.jpg"].forEach(src=>{ const i=new Image(); i.src=src; });
 }
 function playMusic(){
   if(musicStarted || !musicBuf || !actx) return; musicStarted = true;
@@ -191,18 +199,18 @@ function preload(i){
 /* ============ boot ============ */
 (function boot(){
   const bar = $("load").querySelector("i");
-  let done = 0, total = 4;
-  const tick = ()=>{ done++; bar.style.width = (done/total*100)+"%"; if(done>=total) setTimeout(()=>show($("load"),false),250); };
-  ["capa.jpg","info.jpg","carregando.jpg"].forEach(src=>{ const i=new Image(); i.onload=i.onerror=tick; i.src=src; });
+  let done = 0, total = 2;
+  const tick = ()=>{ done++; bar.style.width = (done/total*100)+"%"; if(done>=total) setTimeout(()=>{ show($("load"),false); setTimeout(loadHeavy,400); },250); };
+  ["capa.jpg"].forEach(src=>{ const i=new Image(); i.onload=i.onerror=tick; i.src=src; });
   vids[0].src = FILES[0]; vids[0].load();
   vids[0].addEventListener("canplay", tick, {once:true});
-  setTimeout(()=>{ if(done<total){ done=total-1; tick(); } }, 7000);
+  setTimeout(()=>{ if(done<total){ done=total-1; tick(); } }, 3500);
   show($("hSubir"),true); show($("hPular"),true);
 })();
 
 function unlock(){
   if(unlocked) return; unlocked = true;
-  initAudio(); startMusic();
+  initAudio(); loadHeavy(); startMusic();
   { const v=vids[1]; v.src = FILES[1]; v.muted=true; const p=v.play(); if(p&&p.then) p.then(()=>{ v.pause(); v.currentTime=0; v.muted=false; }).catch(()=>{ v.muted=false; }); }   // libera o 2º player (iPhone)
 }
 
@@ -263,7 +271,6 @@ function goInfo(){
 const EMBLEM_AT = 4.2;     // segundo do vídeo da loja em que ele termina de descer da moto
 const EMBLEM_MS = 4600;    // duração do emblema na tela
 const em=$("em"); let emTimer=0, emFade=0, emSrc=null, emBlob=null, emUrl=null;
-fetch("emblema.webp").then(r=>r.blob()).then(b=>{ emBlob=b; }).catch(()=>{});
 function stopEmblem(){
   clearTimeout(emTimer); clearTimeout(emFade);
   em.style.transition="none"; em.style.display="none"; em.style.opacity=1; em.removeAttribute("src");
