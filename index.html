@@ -65,8 +65,7 @@
   <img id="loading" class="layer" src="carregando.jpg" alt="Preparando a missão">
   <img id="info" class="layer" src="info.jpg" alt="Informações da festa">
   <canvas id="cv" class="layer" width="720" height="1280"></canvas>
-  <canvas id="em" width="716" height="242"></canvas>
-  <video id="vE" src="emblema.mp4" muted playsinline webkit-playsinline preload="auto"></video>
+  <img id="em" alt="Missão cumprida">
 
   <button class="hot" id="hSubir" aria-label="Subir na moto"></button>
   <button class="hot" id="hPular" aria-label="Pular para as informações"></button>
@@ -260,38 +259,25 @@ function goInfo(){
   show($("hConf"),true); show($("hLocal"),true); show($("chipLocal"),true);
 }
 
-/* ============ emblema "MISSION PASSED" (fundo verde removido em tempo real) ============ */
+/* ============ emblema "MISSION PASSED" (animação com transparência, sem depender de vídeo) ============ */
 const EMBLEM_AT = 4.2;     // segundo do vídeo da loja em que ele termina de descer da moto
-const vE=$("vE"), em=$("em"), emx=em.getContext("2d",{willReadFrequently:true});
-let emRaf=0, emSrc=null;
+const EMBLEM_MS = 4600;    // duração do emblema na tela
+const em=$("em"); let emTimer=0, emFade=0, emSrc=null, emBlob=null, emUrl=null;
+fetch("emblema.webp").then(r=>r.blob()).then(b=>{ emBlob=b; }).catch(()=>{});
 function stopEmblem(){
-  cancelAnimationFrame(emRaf); emRaf=0; em.style.display="none"; em.style.opacity=1;
-  try{ vE.pause(); }catch(e){}
+  clearTimeout(emTimer); clearTimeout(emFade);
+  em.style.transition="none"; em.style.display="none"; em.style.opacity=1; em.removeAttribute("src");
+  if(emUrl){ URL.revokeObjectURL(emUrl); emUrl=null; }
   if(emSrc){ try{ emSrc.stop(); }catch(e){} emSrc=null; }
 }
 function playEmblem(my, done){
   let fin=false; const end=()=>{ if(fin) return; fin=true; stopEmblem(); done(); };
-  try{ vE.currentTime=0; }catch(e){}
-  const p=vE.play(); if(p&&p.catch) p.catch(end);
   if(actx && embBuf){ if(actx.state==="suspended") actx.resume(); emSrc=actx.createBufferSource(); emSrc.buffer=embBuf; emSrc.connect(sfxGain); emSrc.start(0); }
-  em.style.display="block"; em.style.opacity=1;
-  vE.onended=end; setTimeout(end, 5200);
-  const loop=()=>{
-    if(fin || my!==token) return;
-    try{
-      emx.drawImage(vE,0,0,716,242);
-      const im=emx.getImageData(0,0,716,242), d=im.data;
-      for(let i=0;i<d.length;i+=4){
-        const r=d[i], g=d[i+1], b=d[i+2], sp=g-(r>b?r:b);
-        if(sp>70){ d[i+3]=0; }
-        else if(sp>22){ d[i+3]=255*(70-sp)/48; d[i+1]=(r>b?r:b); }
-      }
-      emx.putImageData(im,0,0);
-    }catch(e){}
-    const t=vE.currentTime; if(t>4.0) em.style.opacity=Math.max(0,(4.6-t)/0.6);
-    emRaf=requestAnimationFrame(loop);
-  };
-  loop();
+  em.style.transition="none"; em.style.opacity=1;
+  em.src = emBlob ? (emUrl=URL.createObjectURL(emBlob)) : ("emblema.webp?"+Date.now());
+  em.style.display="block";
+  emFade=setTimeout(()=>{ em.style.transition="opacity .5s"; em.style.opacity=0; }, EMBLEM_MS-500);
+  emTimer=setTimeout(end, EMBLEM_MS);
 }
 
 /* ============ capas passando nas telas verdes (acompanha cada quadro do vídeo) ============ */
