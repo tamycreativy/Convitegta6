@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Rafael 17 anos • Convite</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;background:#1a0630;overflow:hidden;font-family:"Arial Narrow",Impact,system-ui,sans-serif}
+  body{display:flex;align-items:center;justify-content:center;height:100dvh}
+  #stage{position:relative;height:min(100dvh,calc(100vw*16/9));aspect-ratio:9/16;background:#2a0a40;overflow:hidden;user-select:none;-webkit-user-select:none}
+  .layer{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:none;z-index:1;background:transparent}
+  .on{display:block}
+  #cv{pointer-events:none;z-index:500}
+  #em{position:absolute;left:4%;width:92%;top:14%;z-index:600;pointer-events:none;display:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.55))}
+  #vE{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0}
+  .hot{position:absolute;background:transparent;border:0;border-radius:18px;cursor:pointer;display:none;z-index:1000}
+  #hSubir{left:43%;top:44.4%;width:51%;height:5.6%;animation:pulse 1.6s infinite}
+  #hPular{left:43%;top:51.4%;width:51%;height:6.6%}
+  #hConf{left:12%;top:79.4%;width:76%;height:7.4%;border-radius:22px;animation:pulse 1.8s infinite}
+  #hLocal{left:12%;top:64.8%;width:76%;height:6.2%}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,40,190,.0)}50%{box-shadow:0 0 22px 6px rgba(255,40,190,.65)}}
+  .btn{position:absolute;left:50%;transform:translateX(-50%);z-index:1001;display:none;color:#fff;font-weight:800;font-style:italic;letter-spacing:.5px;text-transform:uppercase;
+    border:2px solid #ff4fd8;border-radius:16px;padding:.9em 1.4em;font-size:clamp(14px,4.4vw,22px);background:linear-gradient(180deg,#ff2fb9,#b0129a);
+    box-shadow:0 0 18px rgba(255,47,185,.8),inset 0 0 12px rgba(255,255,255,.25);cursor:pointer;touch-action:none;white-space:nowrap;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  #bHold{bottom:9%;animation:pulse 1.4s infinite}
+  #bScan{bottom:9%;animation:pulse 1.4s infinite}
+  .skip{position:absolute;left:50%;transform:translateX(-50%);bottom:1.2%;z-index:1001;display:none;color:rgba(255,214,245,.85);font-size:clamp(9px,2.5vw,11px);
+    background:none;border:0;border-bottom:1px solid rgba(255,214,245,.55);border-radius:0;padding:.5em .3em .15em;text-transform:uppercase;letter-spacing:1.2px;cursor:pointer;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+  #chipLocal{position:absolute;z-index:1001;display:none;left:66%;width:21%;text-align:center;top:66.5%;color:#fff;font-weight:800;font-size:clamp(8px,2.3vw,11px);letter-spacing:.3px;white-space:nowrap;
+    background:linear-gradient(180deg,#ff2fb9,#b0129a);border:1.5px solid #ff9be8;border-radius:999px;padding:.5em 0;text-transform:uppercase;pointer-events:none;box-shadow:0 0 12px rgba(255,47,185,.8)}
+  #prog{position:absolute;left:6%;right:6%;top:2.2%;height:5px;background:rgba(255,255,255,.2);border-radius:9px;z-index:1001;display:none;overflow:hidden}
+  #prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff2fb9,#ff9be8);box-shadow:0 0 10px #ff2fb9}
+  #wait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1500;display:none;color:#fff;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:1px;
+    font-size:clamp(12px,3.6vw,18px);background:rgba(20,4,30,.6);border:1px solid rgba(255,79,216,.6);border-radius:12px;padding:.7em 1.2em}
+  #modal{position:absolute;inset:0;z-index:2500;display:none;align-items:center;justify-content:center;background:rgba(14,3,24,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  #modal .card{width:82%;background:linear-gradient(180deg,#2a0a40,#1a0630);border:2px solid #ff4fd8;border-radius:20px;padding:1.4em 1.2em 1.2em;text-align:center;color:#fff;box-shadow:0 0 28px rgba(255,47,185,.55)}
+  #modal h3{font-style:italic;text-transform:uppercase;font-size:clamp(15px,4.6vw,22px);letter-spacing:.5px;margin-bottom:.5em;color:#ffd6f5}
+  #modal p{font-family:system-ui,sans-serif;font-size:clamp(12px,3.5vw,16px);line-height:1.4;opacity:.92;margin-bottom:1.1em}
+  #modal a.go{display:block;color:#fff;text-decoration:none;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.5px;font-size:clamp(14px,4.2vw,20px);
+    border:2px solid #ff9be8;border-radius:14px;padding:.8em 1em;background:linear-gradient(180deg,#ff2fb9,#b0129a);box-shadow:0 0 16px rgba(255,47,185,.8)}
+  #modal button.back{margin-top:.9em;background:none;border:0;border-bottom:1px solid rgba(255,214,245,.55);color:rgba(255,214,245,.9);font-size:clamp(10px,3vw,13px);text-transform:uppercase;letter-spacing:1.2px;padding:.3em .3em .15em;cursor:pointer}
+  #toast{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);z-index:2001;background:rgba(20,4,30,.92);border:1px solid #ff4fd8;color:#fff;padding:.8em 1.2em;border-radius:14px;
+    font-size:clamp(12px,3.4vw,16px);text-align:center;max-width:86%;display:none}
+  #load{position:absolute;inset:0;z-index:3000;background:#1a0630;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#ffd6f5;font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:1px;font-size:clamp(13px,4vw,20px)}
+  #load b{display:block;width:60%;height:8px;border:1.5px solid #ff4fd8;border-radius:9px;overflow:hidden}
+  #load b i{display:block;height:100%;width:0;background:#ff2fb9;transition:width .3s}
+</style>
+</head>
+<body>
+<div id="stage">
+  <img id="capa" class="layer on" src="capa.jpg" alt="Rafael 17 anos">
+  <video id="vA" class="layer" playsinline webkit-playsinline preload="auto"></video>
+  <video id="vB" class="layer" playsinline webkit-playsinline preload="auto"></video>
+  <img id="loading" class="layer" src="carregando.jpg" alt="Preparando a missão">
+  <img id="info" class="layer" src="info.jpg" alt="Informações da festa">
+  <canvas id="cv" class="layer" width="720" height="1280"></canvas>
+  <canvas id="em" width="716" height="242"></canvas>
+  <video id="vE" src="emblema.mp4" muted playsinline webkit-playsinline preload="auto"></video>
+
+  <button class="hot" id="hSubir" aria-label="Subir na moto"></button>
+  <button class="hot" id="hPular" aria-label="Pular para as informações"></button>
+  <button class="hot" id="hConf" aria-label="Confirmar presença"></button>
+  <button class="hot" id="hLocal" aria-label="Ver local"></button>
+  <div id="chipLocal">📍 Ver mapa</div>
+
+  <div id="prog"><i></i></div>
+  <button class="btn" id="bHold">🏍️ Segure para acelerar</button>
+  <button class="btn" id="bScan">📱 Escanear</button>
+  <button class="skip" id="skip">Pular para as informações</button>
+
+  <audio id="music" src="musica.mp3" loop preload="auto"></audio>
+  <div id="wait">Carregando…</div>
+  <div id="modal"><div class="card">
+    <h3>Confirmar presença</h3>
+    <p>Você será redirecionado para o WhatsApp para enviar sua confirmação.</p>
+    <a class="go" id="goWpp" href="#" target="_blank" rel="noopener noreferrer">Continuar</a>
+    <button class="back" id="backWpp">Voltar</button>
+  </div></div>
+  <div id="toast"></div>
+  <div id="load">Carregando missão…<b><i></i></b></div>
+</div>
+
+<script>
+/* ========= CONFIGURAÇÃO (troque aqui) ========= */
+const CONFIG = {
+  whatsapp: "",            // ex.: "5585999999999" (com DDI e DDD, só números)
+  mensagem: "Oi! Confirmo minha presença na festa de 17 anos do Rafael! 🎉",
+  endereco: ""             // ex.: "Rua Exemplo, 123, Fortaleza - CE"
+};
+const COVERS = ["cover1.jpg","cover2.jpg"];   // capas que passam nas telas dos totens
+const MUSIC_VOL = 0.15;   // volume da música (0 a 1)
+const SFX_VOL = 1.0;      // volume do clique
+/* ============================================== */
+
+const BOXES = [[[50,528,104,662],[646,538,698,666],[552,554,584,614],[292,556,320,614]],[[50,528,104,662],[646,538,698,666],[292,554,320,614],[552,554,584,614]],[[48,528,104,662],[646,538,698,666],[292,554,320,614],[552,554,584,616]],[[48,528,104,662],[646,538,698,666],[292,554,320,614],[552,554,584,616]],[[48,528,104,662],[646,538,698,666],[292,554,320,614],[552,554,584,616]],[[48,528,104,662],[646,538,700,666],[292,554,320,614],[552,554,584,616]],[[48,528,104,662],[646,538,700,666],[292,554,320,614],[552,554,584,616]],[[48,528,104,662],[646,538,700,666],[292,554,320,614],[552,554,584,616]],[[48,528,100,662],[646,538,700,668],[552,554,584,616],[292,556,320,614]],[[48,528,104,662],[646,538,700,668],[552,554,584,616],[292,556,320,614]],[[48,528,100,662],[646,538,700,668],[552,554,584,616],[292,556,320,614]],[[48,528,100,662],[646,538,700,668],[552,554,584,616],[292,556,320,614]],[[46,528,100,662],[648,538,700,668],[552,554,584,616],[292,556,320,614]],[[46,528,100,662],[648,538,700,668],[552,554,584,616],[292,556,320,614]],[[46,528,100,662],[648,538,700,668],[552,554,584,616],[292,556,320,614]],[[46,528,100,662],[648,538,700,668],[554,554,584,616],[292,556,320,614]],[[44,528,100,664],[648,538,702,668],[554,554,584,616],[292,556,320,614]],[[44,528,100,664],[648,538,702,668],[556,554,584,616],[292,556,320,614]],[[44,528,100,664],[648,538,702,668],[556,554,584,616],[292,556,320,614]],[[44,528,100,664],[648,538,702,668],[292,554,320,614],[556,554,584,616]],[[44,528,100,664],[648,538,702,668],[556,554,584,616],[292,556,320,614]],[[44,528,96,664],[648,538,704,668],[556,554,584,616],[292,556,320,614]],[[42,528,96,664],[650,538,704,668],[556,554,584,616],[292,556,320,614]],[[42,528,96,664],[650,538,704,670],[556,554,584,616],[292,556,320,614]],[[42,528,96,664],[650,538,704,670],[556,554,584,616],[296,556,320,614]],[[40,528,96,664],[650,538,704,670],[556,554,584,616],[296,556,320,614]],[[40,528,96,664],[650,538,704,670],[556,554,584,616],[300,556,320,614]],[[40,528,96,666],[652,538,706,670],[556,554,584,616]],[[40,528,96,666],[652,538,706,670],[556,554,586,616]],[[38,528,94,666],[652,538,706,670],[556,554,586,616]],[[38,528,92,666],[652,538,706,670],[556,554,586,616]],[[38,528,92,666],[652,538,708,670],[556,554,586,616]],[[36,528,92,666],[652,538,708,670],[556,556,586,616]],[[36,528,92,666],[654,538,708,672],[556,556,586,616]],[[36,528,90,666],[654,538,708,672],[556,556,586,616]],[[34,528,90,666],[654,538,710,672],[556,556,586,616]],[[34,528,90,668],[654,538,710,672],[556,556,586,618]],[[32,528,88,668],[654,538,710,672],[556,556,586,618]],[[32,526,88,668],[656,538,712,672],[556,556,586,618]],[[32,526,88,668],[656,538,712,672],[556,556,586,618]],[[30,526,88,668],[656,538,712,672],[556,556,588,618]],[[30,526,86,668],[656,538,712,672],[556,556,588,618]],[[28,526,86,668],[656,538,712,672],[556,556,588,618]],[[28,526,86,670],[658,538,714,674],[556,556,588,618]],[[28,526,84,670],[658,538,714,674],[556,556,588,618]],[[26,526,84,670],[658,538,714,674],[300,556,316,606],[556,556,588,618]],[[26,526,84,670],[658,538,716,674],[296,556,314,616],[556,556,588,618]],[[24,526,84,670],[660,538,716,674],[292,556,314,616],[556,556,588,618]],[[24,526,84,670],[660,538,716,674],[288,556,314,616],[556,556,588,618]],[[24,526,82,670],[660,538,716,676],[288,556,314,616],[556,556,588,618]],[[22,526,80,672],[660,538,716,676],[288,556,312,616],[556,556,588,618]],[[22,526,80,672],[660,538,716,676],[288,556,312,616],[556,556,588,618]],[[20,526,80,672],[662,538,716,676],[288,556,312,616],[556,556,588,618]],[[20,526,80,672],[662,538,716,676],[288,556,312,618],[556,556,588,620]],[[18,526,80,672],[662,538,716,676],[288,556,312,618],[556,556,588,620]],[[18,526,76,672],[664,538,716,678],[288,556,312,618],[556,556,588,620]],[[16,526,76,674],[664,538,716,678],[288,556,312,618],[558,556,588,620]],[[16,526,76,674],[664,538,716,678],[288,556,310,618],[558,556,588,620]],[[14,526,76,674],[664,538,716,678],[288,556,310,618],[558,556,588,620]],[[14,526,76,674],[664,538,716,678],[288,556,310,618],[558,556,588,620]],[[12,526,72,674],[666,538,716,678],[288,556,310,618],[558,556,588,620]],[[12,526,72,676],[666,538,716,680],[288,556,308,618],[558,556,588,620]],[[10,526,72,676],[668,540,716,680],[288,556,308,620],[558,556,590,620]],[[10,526,72,676],[668,540,716,680],[288,556,308,616],[560,556,590,620]],[[8,526,72,676],[668,540,716,680],[288,556,308,612],[560,556,590,620]],[[8,526,68,676],[668,540,716,680],[286,556,308,610],[560,556,590,620]],[[6,528,68,678],[668,540,716,682],[560,556,590,622]],[[6,526,68,678],[670,540,716,682],[560,558,590,622]],[[4,528,66,678],[670,540,716,682],[560,558,590,622]],[[4,528,66,678],[672,540,716,682],[560,558,592,622]],[[4,528,64,680],[672,540,716,682],[560,558,592,622]],[[4,528,64,680],[672,540,716,684],[560,558,592,622]],[[672,540,716,684],[284,558,304,606],[560,558,592,622]],[[672,540,716,684],[284,558,304,606],[560,558,592,622]],[[674,542,716,684],[284,558,302,608],[560,558,592,622]],[[674,542,716,686],[284,558,302,608],[560,558,592,624]],[[284,558,302,610],[560,558,592,624]],[[284,558,300,612],[560,558,592,624]],[[560,558,592,624],[284,560,300,614]],[[284,560,300,616],[560,560,592,624]],[[284,560,300,616],[560,560,592,624]],[[560,560,592,624]],[[560,560,592,626]],[[560,560,592,626]],[[560,560,592,626]],[[560,560,592,626]],[[560,560,592,626]],[[560,560,594,626]],[[560,560,594,628]],[[562,562,594,628]],[[562,562,594,628]],[[562,562,594,628]],[[562,562,594,628]],[[564,562,594,628]],[[564,562,596,630]],[[566,562,596,630]],[[568,562,596,630]],[[568,562,596,630]],[[570,564,596,630]],[[572,564,596,630]],[[572,564,596,630]],[[572,564,596,632]],[[574,564,596,632]],[[576,564,596,632]],[[576,564,596,632]],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[[80,564,132,660]],[[80,564,132,672]],[[78,564,130,680]],[[78,564,130,682]],[[76,564,128,684]],[[76,564,128,684]],[[76,564,128,684]],[[76,564,128,686]],[[74,564,126,686]],[[72,564,126,686]],[[72,564,124,686]],[[72,564,124,688]],[[72,564,124,688]],[[70,564,124,688]],[[70,564,124,688]],[[68,564,122,688]],[[68,564,122,688]],[[68,564,120,688]],[[68,564,120,688]],[[66,564,116,688]],[[66,564,112,688]],[[64,564,104,688]],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]];
+const FILES = ["v1_subir.mp4","v2_andando.mp4","v3_loja.mp4","v4_escanear.mp4"];
+const $ = id => document.getElementById(id);
+const vids = [$("vA"), $("vB")];
+const cv = $("cv"), ctx = cv.getContext("2d");
+let scene = 0, unlocked = false, rafId = 0, scanning = false, ending = false, token = 0;
+const coverImgs = COVERS.map(s => { const i = new Image(); i.src = s; return i; });
+
+/* ============ SOM (Web Audio: mistura com o áudio dos vídeos, inclusive no iPhone) ============ */
+let actx=null, musicGain=null, sfxGain=null, musicBuf=null, sfxBuf=null, embBuf=null, wantMusic=false, musicStarted=false, webAudioOK=false;
+const music = $("music");
+const sfxPool = Array.from({length:3}, ()=>{ const a=new Audio("clique.mp3"); a.preload="auto"; a.volume=SFX_VOL; return a; });
+let sfxIdx=0;
+function loadBuf(url){ return fetch(url).then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ab=>new Promise((res,rej)=>actx.decodeAudioData(ab,res,rej))); }
+let audioInited=false;
+function initAudio(){
+  if(audioInited) return; audioInited=true;
+  try{
+    if(navigator.audioSession) navigator.audioSession.type = "playback";   // iPhone: toca mesmo no modo silencioso
+    const AC = window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    actx = new AC();
+    musicGain = actx.createGain(); musicGain.gain.value = 0; musicGain.connect(actx.destination);
+    sfxGain = actx.createGain(); sfxGain.gain.value = SFX_VOL; sfxGain.connect(actx.destination);
+    webAudioOK = true;
+    loadBuf("musica.mp3").then(b=>{ musicBuf=b; if(wantMusic) playMusic(); }).catch(()=>{ webAudioOK=false; if(wantMusic) musicFallback(); });
+    loadBuf("clique.mp3").then(b=>{ sfxBuf=b; }).catch(()=>{});
+    loadBuf("emblema.mp3").then(b=>{ embBuf=b; }).catch(()=>{});
+  }catch(e){ webAudioOK=false; }
+}
+function playMusic(){
+  if(musicStarted || !musicBuf || !actx) return; musicStarted = true;
+  const src = actx.createBufferSource(); src.buffer = musicBuf; src.loop = true; src.connect(musicGain); src.start(0);
+  const t = actx.currentTime; musicGain.gain.setValueAtTime(0,t); musicGain.gain.linearRampToValueAtTime(MUSIC_VOL, t+1.5);
+}
+function musicFallback(){ try{ music.volume = MUSIC_VOL; const p=music.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+function startMusic(){
+  wantMusic = true;
+  if(actx){ if(actx.state==="suspended") actx.resume(); }
+  if(webAudioOK){ playMusic(); } else { musicFallback(); }
+}
+function sfx(){
+  try{
+    if(actx && sfxBuf){ if(actx.state==="suspended") actx.resume(); const s=actx.createBufferSource(); s.buffer=sfxBuf; s.connect(sfxGain); s.start(0); return; }
+    const a=sfxPool[sfxIdx++%sfxPool.length]; a.currentTime=0; const p=a.play(); if(p&&p.catch) p.catch(()=>{});
+  }catch(e){}
+}
+initAudio();   // cria o áudio e decodifica clique+música já ao abrir (o 1º toque já faz barulho)
+document.addEventListener("visibilitychange", ()=>{
+  if(!actx) return; if(document.hidden) actx.suspend(); else if(unlocked) actx.resume();
+});
+
+/* ============ util ============ */
+function show(el, on, disp){ el.style.display = on ? (disp||"block") : "none"; }
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.style.display="block"; clearTimeout(toast.t); toast.t=setTimeout(()=>t.style.display="none",2600); }
+function hideAllUI(){ ["hSubir","hPular","hConf","hLocal","bHold","bScan","skip","chipLocal","prog"].forEach(i=>show($(i),false)); }
+
+/* troca de camada por transição suave (a imagem anterior fica até a nova aparecer: nunca tela preta) */
+const LAYERS = ["capa","vA","vB","loading","info"];
+let zTop = 2;
+function showLayer(id, withCv){
+  const el = $(id);
+  const prev = LAYERS.filter(x=>x!==id && $(x).classList.contains("on"));
+  el.style.transition = "none"; el.style.opacity = 0; el.style.zIndex = ++zTop; el.classList.add("on");
+  void el.offsetWidth;
+  el.style.transition = "opacity .45s"; el.style.opacity = 1;
+  cv.classList.toggle("on", !!withCv);
+  clearTimeout(showLayer.t);
+  showLayer.t = setTimeout(()=>{ prev.forEach(x=>{ $(x).classList.remove("on"); }); el.style.transition=""; }, 520);
+}
+
+/* espera o vídeo estar pronto antes de trocar; enquanto isso a cena anterior continua na tela */
+function ready(v){
+  return new Promise(res=>{
+    if(v.readyState>=3) return res();
+    let done=false, w=setTimeout(()=>{ show($("wait"),true); },1200);
+    const fin=()=>{ if(done) return; done=true; clearTimeout(w); show($("wait"),false); res(); };
+    v.addEventListener("canplay", fin, {once:true});
+    v.addEventListener("loadeddata", ()=>{ if(v.readyState>=3) fin(); }, {once:true});
+    setTimeout(fin, 12000);
+  });
+}
+function preload(i){
+  if(i>=FILES.length) return;
+  const v = vids[i%2]; if(!v.src.endsWith(FILES[i])){ v.src = FILES[i]; v.load(); }
+}
+
+/* ============ boot ============ */
+(function boot(){
+  const bar = $("load").querySelector("i");
+  let done = 0, total = 4;
+  const tick = ()=>{ done++; bar.style.width = (done/total*100)+"%"; if(done>=total) setTimeout(()=>show($("load"),false),250); };
+  ["capa.jpg","info.jpg","carregando.jpg"].forEach(src=>{ const i=new Image(); i.onload=i.onerror=tick; i.src=src; });
+  vids[0].src = FILES[0]; vids[0].load();
+  vids[0].addEventListener("canplay", tick, {once:true});
+  setTimeout(()=>{ if(done<total){ done=total-1; tick(); } }, 7000);
+  show($("hSubir"),true); show($("hPular"),true);
+})();
+
+function unlock(){
+  if(unlocked) return; unlocked = true;
+  initAudio(); startMusic();
+  { const v=vids[1]; v.src = FILES[1]; v.muted=true; const p=v.play(); if(p&&p.then) p.then(()=>{ v.pause(); v.currentTime=0; v.muted=false; }).catch(()=>{ v.muted=false; }); }   // libera o 2º player (iPhone)
+}
+
+/* ============ cenas ============ */
+async function goVideo(i){
+  const my = ++token;
+  scene = i+1;
+  hideAllUI();
+  const v = vids[i%2], other = vids[(i+1)%2];
+  if(!v.src.endsWith(FILES[i])){ v.src = FILES[i]; v.load(); }
+  v.onended = null; v.ontimeupdate = null; v.muted = false;
+  await ready(v);
+  if(my!==token) return;
+  try{ v.currentTime = 0; }catch(e){}
+  showLayer(i%2?"vB":"vA", false);
+  other.pause();
+  show($("skip"), true);
+  preload(i+1);
+
+  if(i===0){                          // subindo na moto
+    v.play().catch(()=>{});
+    v.onended = ()=>{ showLayer("loading"); hideAllUI(); const t=++token; setTimeout(()=>{ if(token===t) goVideo(1); }, 2300); };
+  }
+  if(i===1){                          // pilotagem: segura pra acelerar
+    show($("bHold"),true); show($("prog"),true);
+    const bar = $("prog").querySelector("i"), hold = $("bHold");
+    const start = e=>{ e.preventDefault(); v.play().catch(()=>{}); };
+    const stop  = e=>{ e.preventDefault(); v.pause(); };
+    hold.onpointerdown = start; hold.onpointerup = stop; hold.onpointerleave = stop; hold.onpointercancel = stop;
+    hold.oncontextmenu = e=>e.preventDefault();
+    v.ontimeupdate = ()=>{ bar.style.width = (v.currentTime/v.duration*100)+"%"; if(v.currentTime>0.3) hold.style.animation="none"; };
+    v.onended = ()=>goVideo(2);
+  }
+  if(i===2){                          // chegada na loja
+    v.play().catch(()=>{});
+    let shown=false;
+    v.ontimeupdate = ()=>{ if(!shown && v.currentTime>=EMBLEM_AT){ shown=true; v.pause(); playEmblem(my, ()=>{ if(my===token) v.play().catch(()=>{}); }); } };
+    v.onended = ()=>goVideo(3);
+  }
+  if(i===3){                          // totens + escanear
+    show($("bScan"),true); scanning=false; ending=false;
+    // capas já fixadas dentro do vídeo
+    $("bScan").onclick = ()=>{ if(scanning) return; scanning=true; sfx(); show($("bScan"),false); show($("skip"),false); v.play().catch(()=>{}); };
+    v.ontimeupdate = ()=>{ if(!ending && v.currentTime>=10.2){ ending=true; v.pause(); goInfo(); } };
+    v.onended = ()=>{ if(!ending){ ending=true; goInfo(); } };
+  }
+}
+
+function goInfo(){
+  token++; scene = 5;
+  hideAllUI(); stopCovers(); stopEmblem();
+  showLayer("info");
+  setTimeout(()=>{ vids.forEach(v=>v.pause()); }, 600);
+  show($("hConf"),true); show($("hLocal"),true); show($("chipLocal"),true);
+}
+
+/* ============ emblema "MISSION PASSED" (fundo verde removido em tempo real) ============ */
+const EMBLEM_AT = 4.2;     // segundo do vídeo da loja em que ele termina de descer da moto
+const vE=$("vE"), em=$("em"), emx=em.getContext("2d",{willReadFrequently:true});
+let emRaf=0, emSrc=null;
+function stopEmblem(){
+  cancelAnimationFrame(emRaf); emRaf=0; em.style.display="none"; em.style.opacity=1;
+  try{ vE.pause(); }catch(e){}
+  if(emSrc){ try{ emSrc.stop(); }catch(e){} emSrc=null; }
+}
+function playEmblem(my, done){
+  let fin=false; const end=()=>{ if(fin) return; fin=true; stopEmblem(); done(); };
+  try{ vE.currentTime=0; }catch(e){}
+  const p=vE.play(); if(p&&p.catch) p.catch(end);
+  if(actx && embBuf){ if(actx.state==="suspended") actx.resume(); emSrc=actx.createBufferSource(); emSrc.buffer=embBuf; emSrc.connect(sfxGain); emSrc.start(0); }
+  em.style.display="block"; em.style.opacity=1;
+  vE.onended=end; setTimeout(end, 5200);
+  const loop=()=>{
+    if(fin || my!==token) return;
+    try{
+      emx.drawImage(vE,0,0,716,242);
+      const im=emx.getImageData(0,0,716,242), d=im.data;
+      for(let i=0;i<d.length;i+=4){
+        const r=d[i], g=d[i+1], b=d[i+2], sp=g-(r>b?r:b);
+        if(sp>70){ d[i+3]=0; }
+        else if(sp>22){ d[i+3]=255*(70-sp)/48; d[i+1]=(r>b?r:b); }
+      }
+      emx.putImageData(im,0,0);
+    }catch(e){}
+    const t=vE.currentTime; if(t>4.0) em.style.opacity=Math.max(0,(4.6-t)/0.6);
+    emRaf=requestAnimationFrame(loop);
+  };
+  loop();
+}
+
+/* ============ capas passando nas telas verdes (acompanha cada quadro do vídeo) ============ */
+const SW=180, SH=320, K=720/SW;
+const sc=document.createElement("canvas"); sc.width=SW; sc.height=SH;
+const sctx=sc.getContext("2d",{willReadFrequently:true});
+const mk=document.createElement("canvas"); mk.width=SW; mk.height=SH;
+const mctx=mk.getContext("2d"); const mimg=mctx.createImageData(SW,SH);
+let maskFail=false;
+const lab=new Int32Array(SW*SH), stack=new Int32Array(SW*SH);
+
+function analyze(v){
+  sctx.drawImage(v,0,0,SW,SH);
+  const d=sctx.getImageData(0,0,SW,SH).data;
+  const g=new Uint8Array(SW*SH);
+  for(let i=0,p=0;p<SW*SH;p++,i+=4){ const r=d[i],gg=d[i+1],b=d[i+2]; g[p]=(gg>120&&gg>r+40&&gg>b+55)?1:0; }
+  lab.fill(0);
+  const keep=new Uint8Array(SW*SH), comps=[]; let id=0;
+  for(let p0=0;p0<SW*SH;p0++){
+    if(!g[p0]||lab[p0]) continue;
+    id++; let sp=0, n=0, x0=SW,y0=SH,x1=0,y1=0, sy=0; stack[sp++]=p0; lab[p0]=id;
+    const mem=[];
+    while(sp){
+      const p=stack[--sp]; mem.push(p); n++;
+      const x=p%SW, y=(p/SW)|0; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; sy+=y;
+      if(x>0&&g[p-1]&&!lab[p-1]){lab[p-1]=id;stack[sp++]=p-1;}
+      if(x<SW-1&&g[p+1]&&!lab[p+1]){lab[p+1]=id;stack[sp++]=p+1;}
+      if(y>0&&g[p-SW]&&!lab[p-SW]){lab[p-SW]=id;stack[sp++]=p-SW;}
+      if(y<SH-1&&g[p+SW]&&!lab[p+SW]){lab[p+SW]=id;stack[sp++]=p+SW;}
+    }
+    const w=x1-x0+1, h=y1-y0+1, cy=sy/n;
+    // ignora pontinhos, reflexos no chão e formas que não são tela
+    if(n>=10 && n/(w*h)>0.3 && cy<SH*0.74){ comps.push([x0,y0,x1+1,y1+1]); for(const p of mem) keep[p]=1; }
+  }
+  // dilata 1px para cobrir a borda esverdeada
+  const out=mimg.data;
+  for(let y=0;y<SH;y++)for(let x=0;x<SW;x++){
+    const p=y*SW+x; let on=keep[p];
+    if(!on){ if((x>0&&keep[p-1])||(x<SW-1&&keep[p+1])||(y>0&&keep[p-SW])||(y<SH-1&&keep[p+SW])) on=1; }
+    const q=p*4; out[q]=out[q+1]=out[q+2]=255; out[q+3]=on?255:0;
+  }
+  mctx.putImageData(mimg,0,0);
+  return comps;
+}
+
+function startCovers(v){
+  stopCovers();
+  const loop = ()=>{
+    ctx.globalCompositeOperation="source-over";
+    ctx.clearRect(0,0,720,1280);
+    const now = performance.now();
+    let comps=null;
+    if(!maskFail){ try{ comps=analyze(v); }catch(e){ maskFail=true; } }
+    if(comps){
+      comps.forEach((b,k)=>{
+        const x=(b[0]-1)*K, y=(b[1]-1)*K, w=(b[2]-b[0]+2)*K, h=(b[3]-b[1]+2)*K;
+        drawTile(x,y,w,h,k,now);
+      });
+      ctx.globalCompositeOperation="destination-in";
+      ctx.imageSmoothingEnabled=true;
+      ctx.drawImage(mk,0,0,720,1280);
+      ctx.globalCompositeOperation="source-over";
+    } else if(maskFail){                       // plano B: caixas pré-calculadas
+      const fi = Math.min(BOXES.length-1, Math.max(0, Math.round(v.currentTime*24)));
+      (BOXES[fi]||[]).forEach((b,k)=>{
+        ctx.save(); ctx.beginPath(); ctx.rect(b[0]-2,b[1]-2,b[2]-b[0]+4,b[3]-b[1]+4); ctx.clip();
+        drawTile(b[0]-2,b[1]-2,b[2]-b[0]+4,b[3]-b[1]+4,k,now); ctx.restore();
+      });
+    }
+    rafId = requestAnimationFrame(loop);
+  };
+  loop();
+}
+function drawTile(x,y,w,h,k,now){
+  const idx = Math.floor((now/1500)+k) % coverImgs.length;
+  const nxt = (idx+1) % coverImgs.length;
+  const ph = (now/1500 + k) % 1;
+  drawCover(coverImgs[idx], x,y,w,h, 1);
+  if(ph>0.8) drawCover(coverImgs[nxt], x,y,w,h, (ph-0.8)/0.2);
+}
+function drawCover(img,x,y,w,h,alpha){
+  if(!img.complete||!img.naturalWidth) return;
+  const s = Math.max(w/img.naturalWidth, h/img.naturalHeight);
+  const iw=img.naturalWidth*s, ih=img.naturalHeight*s;
+  ctx.globalAlpha=alpha; ctx.drawImage(img, x+(w-iw)/2, y+(h-ih)/2, iw, ih); ctx.globalAlpha=1;
+}
+function stopCovers(){ cancelAnimationFrame(rafId); ctx.clearRect(0,0,720,1280); }
+
+/* ============ botões ============ */
+$("hSubir").onclick = ()=>{ unlock(); sfx(); goVideo(0); };
+$("hPular").onclick = ()=>{ unlock(); sfx(); vids.forEach(v=>v.pause()); goInfo(); };
+$("skip").onclick   = ()=>{ unlock(); sfx(); vids.forEach(v=>v.pause()); goInfo(); };
+$("hConf").onclick = ()=>{
+  sfx();
+  const a = $("goWpp");
+  a.href = CONFIG.whatsapp ? "https://wa.me/"+CONFIG.whatsapp+"?text="+encodeURIComponent(CONFIG.mensagem) : "#";
+  $("modal").style.display = "flex";
+};
+$("goWpp").onclick = e=>{
+  sfx();
+  if(!CONFIG.whatsapp){ e.preventDefault(); $("modal").style.display="none"; toast("Versão de teste: o WhatsApp ainda não foi configurado."); return; }
+  setTimeout(()=>{ $("modal").style.display="none"; }, 400);
+};
+$("backWpp").onclick = ()=>{ sfx(); $("modal").style.display="none"; };
+$("hLocal").onclick = ()=>{
+  sfx();
+  if(!CONFIG.endereco){ toast("Versão de teste: o endereço ainda não foi configurado."); return; }
+  window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(CONFIG.endereco), "_blank");
+};
+</script>
+</body>
+</html>
